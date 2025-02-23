@@ -20,7 +20,7 @@ license = {text = "MIT license"}
 dependencies = [
   # "rompy",
   "rioxarray",
-  "rompy @ git+https://github.com/rom-py/rompy.git@main",
+  "rompy @ git+https://github.com/rompy-forks/rompy.git@main",
   "pyschism @ git+https://github.com/rompy-forks/pyschism.git", # Needed until schism is split from rompy
   "oceantide",
   "typer",
