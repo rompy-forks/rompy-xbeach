@@ -353,9 +353,9 @@ class BaseDataStation(BaseData):
             self.ds,
             lons=xbnd,
             lats=ybnd,
-            sitename=self.coords.s,
-            lonname=self.coords.x,
-            latname=self.coords.y,
+            #sitename=self.coords.s,
+            #lonname=self.coords.x,
+            #latname=self.coords.y,
             **self.sel_method_kwargs,
         )
         return ds
