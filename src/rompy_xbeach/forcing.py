@@ -13,9 +13,10 @@ from pydantic import Field, model_validator, field_validator
 
 from rompy.core.types import RompyBaseModel
 from rompy.core.time import TimeRange
+from rompy.utils import load_entry_points
 
 from rompy_xbeach.source import SourceCRSOceantide
-from rompy_xbeach.data import BaseData, BaseDataGrid, BaseDataStation, BaseDataTimeseries
+from rompy_xbeach.data import BaseData, BaseDataGrid, BaseDataStation, BaseDataPoint
 from rompy_xbeach.grid import RegularGrid, Ori
 from rompy_xbeach.components.forcing import WindFile, TideFile
 
@@ -178,8 +179,8 @@ class WindStation(BaseDataStation, BaseWind):
     )
 
 
-class WindTimeseries(BaseDataTimeseries, BaseWind):
-    """Wind forcing from timeseries data.
+class WindPoint(BaseDataPoint, BaseWind):
+    """Wind forcing from point timeseries data.
 
     Namelist
     --------
@@ -188,8 +189,8 @@ class WindTimeseries(BaseDataTimeseries, BaseWind):
 
     """
 
-    model_type: Literal["wind_timeseries"] = Field(
-        default="wind_timeseries",
+    model_type: Literal["wind_point"] = Field(
+        default="wind_point",
         description="Model type discriminator",
     )
 
@@ -198,7 +199,7 @@ class WindTimeseries(BaseDataTimeseries, BaseWind):
 # Water level
 # =====================================================================================
 class BaseTide(BaseData):
-    """Base class for Water level forcing from tide.
+    """Base class for Water level forcing from tide based on oceantide.
 
     Namelist
     --------
@@ -226,6 +227,10 @@ class BaseTide(BaseData):
         default="1h",
         description="Frequency for generating the tide timeseries from constituents",
     )
+    variables: list[str] = Field(
+        default=["h"],
+        description="Variables to extract from the dataset",
+    )
 
     @field_validator("tideloc")
     @classmethod
@@ -240,8 +245,8 @@ class BaseTide(BaseData):
         """Variable names in an Oceantide dataset should be fixed."""
         logger.debug("Setting oceantide variables")
         if self.variables:
-            logger.warning(f"Overwriting tide variables from to oceantide convention")
-        self.variables = ["h", "dep"]
+            logger.debug(f"Overwriting tide variables to the oceantide convention")
+        self.variables = ["h"]
         return self
 
     def get(
@@ -302,13 +307,13 @@ class TideGrid(BaseTide, BaseDataGrid):
         default="tide_grid",
         description="Model type discriminator",
     )
-    # source: SourceCRSOceantide = Field(
-    #     description="Source of the tide data",
-    # )
 
 
-class TideTimeseries(BaseDataTimeseries, BaseTide):
-    """Water level forcing from tide cons station.
+# SOURCES_TIDE_STATION = load_entry_points("rompy_xbeach.sources", "tide_station")
+from rompy_xbeach.source import SourceTidePointCSV
+
+class TidePoint(BaseTide, BaseDataPoint):
+    """Water level forcing from single tide cons station.
 
     Namelist
     --------
@@ -321,7 +326,10 @@ class TideTimeseries(BaseDataTimeseries, BaseTide):
 
     """
 
-    model_type: Literal["tide_timeseries"] = Field(
-        default="tide_timeseries",
+    model_type: Literal["tide_point"] = Field(
+        default="tide_point",
         description="Model type discriminator",
+    )
+    source: SourceTidePointCSV = Field(
+        description="Source of the tide data",
     )
