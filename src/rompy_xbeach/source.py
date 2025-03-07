@@ -112,7 +112,7 @@ class SourceXYZ(SourceBase):
                 "zcol fields are correctly specified and the headers can be correctly "
                 f"parsed from read_csv_kwargs ({self.read_csv_kwargs})"
             ) from e
-        df.columns = ["x", "y", "z"]
+        df.columns = [self.xcol, self.ycol, self.zcol]
         return df
 
     def _open(self) -> xr.Dataset:
