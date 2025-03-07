@@ -34,7 +34,7 @@ HERE = Path(__file__).parent
 
 WindType = Annotated[
     Union[
-        WindPoint
+        WindPoint,
         WindGrid,
         WindStation,
         TideGrid,
