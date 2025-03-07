@@ -10,8 +10,10 @@ from rompy.core.time import TimeRange
 from rompy_xbeach.types import XBeachBaseConfig, WbcEnum
 from rompy_xbeach.grid import RegularGrid
 from rompy_xbeach.data import XBeachBathy
-from rompy_xbeach.forcing import WindGrid, WindStation, TideGrid
+from rompy_xbeach.forcing import WindGrid, WindStation, TideGrid, WindPoint
 from rompy_xbeach.boundary import (
+    BoundaryPointParamJons,
+    BoundaryPointParamJonstable,
     BoundaryStationSpectraJons,
     BoundaryStationParamJons,
     BoundaryStationSpectraJonstable,
@@ -32,6 +34,7 @@ HERE = Path(__file__).parent
 
 WindType = Annotated[
     Union[
+        WindPoint
         WindGrid,
         WindStation,
         TideGrid,
@@ -40,6 +43,8 @@ WindType = Annotated[
 ]
 WaveType = Annotated[
     Union[
+        BoundaryPointParamJons,
+        BoundaryPointParamJonstable,
         BoundaryStationSpectraJons,
         BoundaryStationParamJons,
         BoundaryStationSpectraJonstable,
