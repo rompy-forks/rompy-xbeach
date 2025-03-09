@@ -257,7 +257,8 @@ class FilelistMixin:
 class BoundaryJons(FilelistMixin, ABC):
     """Base class for JONS wave boundary from station type dataset such as SMC."""
 
-    id: Literal["jons"] = Field(default="jons", description="Boundary type identifier")
+    #id: Literal["jons"] = Field(default="jons", description="Boundary type identifier")
+    id: Literal["parametric"] = Field(default="parametric", description="Boundary type identifier")
     fnyq: Optional[float] = Field(
         default=None,
         description=(

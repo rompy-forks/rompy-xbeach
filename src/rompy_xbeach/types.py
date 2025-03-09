@@ -40,7 +40,8 @@ class WbcEnum(str, Enum):
     """
 
     PARAMS = "params"
-    JONS = "jons"
+    #JONS = "jons"
+    JONS = "parametric"
     JONSTABLE = "jonstable"
     SWAN = "swan"
     VARDENS = "vardens"
