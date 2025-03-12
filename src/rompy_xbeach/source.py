@@ -120,8 +120,8 @@ class SourceXYZ(SourceBase):
         df = self._open_dataframe()
 
         # Define the grid
-        xgrid = np.unique(np.arange(df.x.min(), df.x.max() + self.res, self.res))
-        ygrid = np.unique(np.arange(df.y.min(), df.y.max() + self.res, self.res))
+        xgrid = np.unique(np.arange(df[self.xcol].min(), df[self.xcol].max() + self.res, self.res))
+        ygrid = np.unique(np.arange(df[self.ycol].min(), df[self.ycol].max() + self.res, self.res))
         if xgrid.size < 3:
             raise ValueError(
                 "The resolution is too high for the provided data, the grid must have "
@@ -131,15 +131,15 @@ class SourceXYZ(SourceBase):
 
         # Interpolate the data
         zgrid = griddata(
-            points=(df.x, df.y),
-            values=df.z,
-            xi=np.meshgrid(xgrid, ygrid),
+            points=(df[self.xcol], df[self.ycol]),
+            values=df[self.zcol],
+            xi=tuple(np.meshgrid(xgrid, ygrid)),
             **self.griddata_kwargs,
         )
 
         # Create the dataset
         ds = xr.Dataset(
-            data_vars={"z": (["y", "x"], zgrid)}, coords={"y": ygrid, "x": xgrid}
+            data_vars={self.zcol: ([self.ycol, self.xcol], zgrid)}, coords={self.ycol: ygrid, self.xcol: xgrid}
         )
         return ds.rio.write_crs(self.crs)
 
