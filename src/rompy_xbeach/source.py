@@ -62,8 +62,9 @@ class SourceGeotiff(SourceBase):
         """This method needs to return an xarray Dataset object."""
         xsd = rioxarray.open_rasterio(self.filename, **self.kwargs)
         xsd = xsd.sel(band=self.band).to_dataset(name="data")
-        xsd = xsd.dropna(dim='x')
-        xsd = xsd.dropna(dim='y')
+        #xsd = xsd.sortby(['x', 'y']).interpolate_na(dim='x').interpolate_na(dim='y')
+        xsd = xsd.ffill(dim='x')
+        xsd = xsd.bfill(dim='x')
         return xsd
 
 
