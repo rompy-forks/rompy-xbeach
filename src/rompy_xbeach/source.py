@@ -60,9 +60,11 @@ class SourceGeotiff(SourceBase):
 
     def _open(self) -> xr.Dataset:
         """This method needs to return an xarray Dataset object."""
-        xds = rioxarray.open_rasterio(self.filename, **self.kwargs)
-        xds = xds.sel(band=self.band).to_dataset(name="data")
-        return xds
+        xsd = rioxarray.open_rasterio(self.filename, **self.kwargs)
+        xsd = xsd.sel(band=self.band).to_dataset(name="data")
+        xsd = xsd.dropna(dim='x')
+        xsd = xsd.dropna(dim='y')
+        return xsd
 
 
 class SourceXYZ(SourceBase):
